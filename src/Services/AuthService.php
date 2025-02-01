@@ -18,41 +18,55 @@ class AuthService implements AuthContract
 
     public function login(string $email, string $password): array
     {
-        // $response = $this->client->login($email, $password);
+        $response = $this->client->login($email, $password);
 
-        // if ($response->status() !== 200) {
-        //     throw new RosalanaAuthException('Login failed', $response->status());
-        // }
+        if ($response->status() !== 200) {
+            throw new RosalanaAuthException('Login failed', $response->status());
+        }
 
-        throw new RosalanaAuthException('Login failed', 401);
+        $data = $response->json()['data'] ?? [];
+        $token = $data['token'] ?? null;
+        $userData = $data['user'] ?? [];
 
-        return [];
+        $localUser = \App\Models\User::updateOrCreate(
+            ['rosalana_account_id' => $user['id']],
+            [
+                'name' => $user['name'] ?? $user['email'],
+                'email' => $user['email'],
+            ]
+        );
+
+        Auth::login($localUser);
+        RosalanaSession::create($token);
+
+        return [
+            'user' => $localUser->toArray(),
+            'token' => $token,
+        ];
     }
 
     public function logout(): void
     {
-        // $this->client->logout();
+        Auth::logout();
+        RosalanaSession::forget();
+
+        $token = RosalanaSession::get();
+        if ($token) {
+            $response = $this->client->logout($token);
+
+            // optional error handling
+        }
     }
 
     public function register(string $name, string $email, string $password, string $password_confirmation): array
     {
-        // $response = $this->client->register($name, $email, $password, $password_confirmation);
-
-        // if ($response->status() !== 200) {
-        //     throw new RosalanaAuthException('Registration failed', $response->status());
-        // }
-
+        // todo
         return [];
     }
 
     public function refresh(string $token): array
     {
-        // $response = $this->client->refresh($token);
-
-        // if ($response->status() !== 200) {
-        //     throw new RosalanaAuthException('Token refresh failed', $response->status());
-        // }
-
+        // todo
         return [];
     }
 }
