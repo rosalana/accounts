@@ -2,13 +2,12 @@
 
 namespace Rosalana\Accounts\Services\Basecamp;
 
-use Illuminate\Http\Client\ConnectionException;
-use Illuminate\Http\Client\Response;
+use Rosalana\Accounts\Services\RosalanaSession;
 use Rosalana\Core\Services\Basecamp\Service;
 
 class UsersService extends Service
 {
-    public function login(string $email, string $password): Response
+    public function login(string $email, string $password)
     {
         return $this->manager->post('/api/v1/login', [
             'email' => $email,
@@ -16,12 +15,13 @@ class UsersService extends Service
         ]);
     }
 
-    public function logout(): Response
+    public function logout()
     {
-        return $this->manager->post('/api/v1/logout');
+        $token = RosalanaSession::get();
+        return $this->manager->withAuth($token)->post('/api/v1/logout');
     }
 
-    public function register(string $name, string $email, string $password, string $password_confirmation): Response
+    public function register(string $name, string $email, string $password, string $password_confirmation)
     {
         return $this->manager->post('/api/v1/register', [
             'name' => $name,
@@ -31,13 +31,15 @@ class UsersService extends Service
         ]);
     }
 
-    public function refresh(): Response
+    public function refresh()
     {
-        return $this->manager->post('/api/v1/refresh');
+        $token = RosalanaSession::get();
+        return $this->manager->withAuth($token)->post('/api/v1/refresh');
     }
 
-    public function current(): Response
+    public function current()
     {
-        return $this->manager->get('/api/v1/me');
+        $token = RosalanaSession::get();
+        return $this->manager->withAuth($token)->get('/api/v1/me');
     }
 }

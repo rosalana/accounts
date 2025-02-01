@@ -26,12 +26,12 @@ interface AuthContract
     /**
      * Refresh user token if it's expired
      */
-    public function refresh(string $token): array;
+    public function refresh(): void;
 
     /**
      * Get current user data
      */
-    public function current(string $token): Authenticatable;
+    public function current(): Authenticatable;
 
     /**
      * #idea
