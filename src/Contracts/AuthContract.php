@@ -2,6 +2,7 @@
 
 namespace Rosalana\Accounts\Contracts;
 
+use Illuminate\Contracts\Auth\Authenticatable;
 use Rosalana\Accounts\Exeptions\RosalanaAuthException;
 
 interface AuthContract
@@ -10,7 +11,7 @@ interface AuthContract
      * Login user by email & password against Rosalana Basecamp,
      * create/update local user, store session/cookie if needed
      */
-    public function login(string $email, string $password): array;
+    public function login(string $email, string $password): Authenticatable;
 
     /**
      * Logout user (both local session/cookie and remote)
@@ -20,12 +21,17 @@ interface AuthContract
     /**
      * Register user in Rosalana Basecamp + create local user record
      */
-    public function register(string $name, string $email, string $password, string $password_confirmation): array;
+    public function register(string $name, string $email, string $password, string $password_confirmation): Authenticatable;
 
     /**
      * Refresh user token if it's expired
      */
     public function refresh(string $token): array;
+
+    /**
+     * Get current user data
+     */
+    public function current(string $token): Authenticatable;
 
     /**
      * #idea
