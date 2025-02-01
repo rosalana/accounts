@@ -7,6 +7,7 @@ use Closure;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 use Rosalana\Accounts\Facades\RosalanaAuth;
+use Rosalana\Accounts\Services\AuthService;
 use Rosalana\Accounts\Services\RosalanaSession;
 use Symfony\Component\HttpFoundation\Response;
 
@@ -27,9 +28,10 @@ class CheckRosalanaTokenValidation
 
         try {
             $decode = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
-
             $user = \App\Models\User::where('rosalana_account_id', $decode->sub)->first();
-            RosalanaAuth::localLogin($user, $token);
+
+            $authService = app(AuthService::class);
+            $authService->localLogin($user, $token);
         } catch (\Firebase\JWT\ExpiredException $e) {
 
             try {

@@ -4,7 +4,6 @@ namespace Rosalana\Accounts\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Rosalana\Accounts\Contracts\AuthContract;
-use Rosalana\Accounts\Exceptions\RosalanaAuthException;
 use Illuminate\Support\Facades\Auth;
 use Rosalana\Core\Facades\Basecamp;
 use Firebase\JWT\JWT;
@@ -79,7 +78,7 @@ class AuthService implements AuthContract
     }
 
 
-    private function syncUser($user)
+    public function syncUser($user)
     {
         return \App\Models\User::updateOrCreate(
             ['rosalana_account_id' => $user['id']],
