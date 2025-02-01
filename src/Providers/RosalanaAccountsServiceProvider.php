@@ -14,8 +14,8 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton(AuthContract::class, function($app) {
-            return new AuthService($app->make(\Rosalana\Accounts\Services\Client::class));
+        $this->app->singleton(AuthContract::class, function() {
+            return new AuthService();
         });
 
         $this->app->resolving('rosalana.basecamp', function (Manager $manager) {

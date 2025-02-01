@@ -3,7 +3,6 @@
 namespace Rosalana\Accounts\Contracts;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Rosalana\Accounts\Exeptions\RosalanaAuthException;
 
 interface AuthContract
 {
@@ -32,13 +31,4 @@ interface AuthContract
      * Get current user data
      */
     public function current(): Authenticatable;
-
-    /**
-     * #idea
-     * Rozdělit funkci `login` na dvě části:
-     * 1. `attempt` - zkusí přihlásit uživatele pokud vyjde tak je přihlášený
-     * 2. `login` - přihlášení uživatele lokálně (session/cookie)
-     * 
-     * Tedy přihlášování (v controlleru už) by mělo vypadat že se prvně zavolá attempt a pokud vyjde tak se zavolá login
-     */
 }
