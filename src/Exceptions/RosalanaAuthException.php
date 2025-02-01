@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Exceptions;
+namespace Rosalana\Accounts\Exceptions;
 
 use Exception;
 

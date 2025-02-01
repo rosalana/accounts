@@ -18,11 +18,41 @@ class AuthService implements AuthContract
 
     public function login(string $email, string $password): array
     {
-        $response = $this->client->login($email, $password);
+        // $response = $this->client->login($email, $password);
 
-        if ($response->status() !== 200) {
-            throw new RosalanaAuthException('Login failed', $response->status());
-        }
+        // if ($response->status() !== 200) {
+        //     throw new RosalanaAuthException('Login failed', $response->status());
+        // }
 
+        throw new RosalanaAuthException('Login failed', 401);
+
+        return [];
+    }
+
+    public function logout(): void
+    {
+        // $this->client->logout();
+    }
+
+    public function register(string $name, string $email, string $password, string $password_confirmation): array
+    {
+        // $response = $this->client->register($name, $email, $password, $password_confirmation);
+
+        // if ($response->status() !== 200) {
+        //     throw new RosalanaAuthException('Registration failed', $response->status());
+        // }
+
+        return [];
+    }
+
+    public function refresh(string $token): array
+    {
+        // $response = $this->client->refresh($token);
+
+        // if ($response->status() !== 200) {
+        //     throw new RosalanaAuthException('Token refresh failed', $response->status());
+        // }
+
+        return [];
     }
 }
