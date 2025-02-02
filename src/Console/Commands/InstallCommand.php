@@ -63,8 +63,9 @@ class InstallCommand extends Command
             preg_replace('/APP_URL=(.*)/', 'APP_URL=http://localhost:8001' . PHP_EOL . 'FRONTEND_URL=http://localhost:3000' . PHP_EOL . 'SANCTUM_STATEFUL_DOMAINS=localhost:3000', file_get_contents(base_path('.env')))
         );
 
-        $this->call('migrate',[
+        $this->call('vandor:publish',[
             '--tag' => 'rosalana-accounts-migrations',
+            '--force' => true,
         ]);
 
         $this->info('Rosalana Accounts scaffolding installed successfully.');
