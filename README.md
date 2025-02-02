@@ -6,7 +6,7 @@ This package is a part of the Rosalana eco-system. It provides a way to manage a
 
 ## Table of Contents
 - [Features](#features)
-    - [Users Service](#usersservice)
+    - [Users Service](#users-service)
     - [RosalanaAuth Facade](#rosalanaauth-facade)
     - [auth.rosalana Middleware](#authrosalana-middleware)
     - [Stubs](#stubs)
