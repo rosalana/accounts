@@ -55,14 +55,14 @@ Http
 │   └── Auth
 │       ├── AuthenticatedSessionController.php
 │       └── RegisteredUserController.php
-├── Requests
-│   └── Auth
-│       ├── LoginRequest.php
-│       └── RegisterRequest.php
-└── routes
-    ├── web.php
-    ├── api.php
-    └── auth.php
+└── Requests
+    └── Auth
+        ├── LoginRequest.php
+        └── RegisterRequest.php
+routes
+├── web.php
+├── api.php
+└── auth.php
 ```
 
 ## Installation
