@@ -49,6 +49,8 @@ class InstallCommand extends Command
 
         // Routes...
         copy(__DIR__ . '/../../../stubs/routes/auth.php', base_path('routes/auth.php'));
+        copy(__DIR__ . '/../../../stubs/routes/web.php', base_path('routes/web.php'));
+        copy(__DIR__ . '/../../../stubs/routes/api.php', base_path('routes/api.php'));
 
         // Configuration...
         $files->copyDirectory(__DIR__ . '/../../../stubs/config', config_path());
