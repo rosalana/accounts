@@ -37,9 +37,14 @@ class InstallCommand extends Command
         $this->info('Installing Rosalana Accounts...');
         $this->info('Publishing Rosalana Accounts assets...');
 
-        // Controllers...
+        // Controllers... copy only if they don't exist
         $files->ensureDirectoryExists(app_path('Http/Controllers/Auth'));
-        $files->copyDirectory(__DIR__ . '/../../../stubs/Http/Controllers/Auth', app_path('Http/Controllers/Auth'));
+        if (! $files->exists(app_path('Http/Controllers/Auth/AuthenticatedSessionController.php'))) {
+            $files->copy(__DIR__ . '/../../../stubs/Http/Controllers/Auth/AuthenticatedSessionController.php', app_path('Http/Controllers/Auth/AuthenticatedSessionController.php'));
+        }
+        if (! $files->exists(app_path('Http/Controllers/Auth/ConfirmablePasswordController.php'))) {
+            $files->copy(__DIR__ . '/../../../stubs/Http/Controllers/Auth/RegisteredUserController.php', app_path('Http/Controllers/Auth/RegisteredUserController.php'));
+        }
 
         // Middleware...
         $this->installMiddleware([

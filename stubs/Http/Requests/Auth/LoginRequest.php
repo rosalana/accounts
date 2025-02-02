@@ -29,7 +29,8 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // dont need to validate - it's done in Rosalana Basecamp
+            'email' => ['required', 'string', 'email', 'max:255'],
+            'password' => ['required', 'string'],
         ];
     }
 

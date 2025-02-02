@@ -13,7 +13,7 @@ interface AuthContract
      * @throws \Rosalana\Accounts\Exceptions\RosalanaAuthException
      * @throws \Rosalana\Accounts\Exceptions\RosalanaCredentialsException
      */
-    public function login(string $email, string $password): Authenticatable;
+    public function login(array $credentials): Authenticatable;
 
     /**
      * Logout user (both local session/cookie and remote)
@@ -28,7 +28,7 @@ interface AuthContract
      * @throws \Rosalana\Accounts\Exceptions\RosalanaAuthException
      * @throws \Rosalana\Accounts\Exceptions\RosalanaCredentialsException
      */
-    public function register(string $name, string $email, string $password, string $password_confirmation): Authenticatable;
+    public function register(array $credentials): Authenticatable;
 
     /**
      * Refresh user token if it's expired

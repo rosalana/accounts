@@ -23,7 +23,9 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            // dont need to validate - it's done in Rosalana Basecamp
+            'name' => ['required', 'string', 'max:255'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'min:8', 'confirmed'],
         ];
     }
 

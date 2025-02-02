@@ -10,9 +10,9 @@ use Rosalana\Core\Services\Basecamp\Service;
 
 class UsersService extends Service
 {
-    public function login(string $email, string $password)
+    public function login(array $credentials)
     {
-        $response = $this->manager->post('/api/v1/login', compact('email', 'password'));
+        $response = $this->manager->post('/api/v1/login', $credentials);
 
         if ($response->json('error')) {
             throw new RosalanaAuthException($response->json('error'), 401);
@@ -37,9 +37,9 @@ class UsersService extends Service
         return $response;
     }
 
-    public function register(string $name, string $email, string $password, string $password_confirmation)
+    public function register(array $credentials)
     {
-        $response = $this->manager->post('/api/v1/register', compact('name', 'email', 'password', 'password_confirmation'));
+        $response = $this->manager->post('/api/v1/register', $credentials);
 
         if ($response->json('error')) {
             throw new RosalanaAuthException($response->json('error'), 401);

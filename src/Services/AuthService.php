@@ -11,9 +11,9 @@ use Firebase\JWT\Key;
 
 class AuthService implements AuthContract
 {
-    public function login(string $email, string $password): Authenticatable
+    public function login(array $credentials): Authenticatable
     {
-        $response = Basecamp::users()->login($email, $password);
+        $response = Basecamp::users()->login($credentials);
 
         $user = $response->json('data.user');
         $token = $response->json('data.token');
@@ -33,9 +33,9 @@ class AuthService implements AuthContract
         $this->localLogout();
     }
 
-    public function register(string $name, string $email, string $password, string $password_confirmation): Authenticatable
+    public function register(array $credentials): Authenticatable
     {
-        $response = Basecamp::users()->register($name, $email, $password, $password_confirmation);
+        $response = Basecamp::users()->register($credentials);
 
         $user = $response->json('data.user');
         $token = $response->json('data.token');
