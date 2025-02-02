@@ -14,7 +14,7 @@ class InstallCommand extends Command
      *
      * @var string
      */
-    protected $signature = 'accounts:install';
+    protected $signature = 'rosalana:accounts:install';
 
     /**
      * The console command description.
@@ -31,8 +31,11 @@ class InstallCommand extends Command
     public function handle()
     {
         $this->call('install:api');
-
+        
         $files = new Filesystem;
+        
+        $this->info('Installing Rosalana Accounts...');
+        $this->info('Publishing Rosalana Accounts assets...');
 
         // Controllers...
         $files->ensureDirectoryExists(app_path('Http/Controllers/Auth'));
@@ -55,6 +58,10 @@ class InstallCommand extends Command
         // Configuration...
         $files->copyDirectory(__DIR__ . '/../../../stubs/config', config_path());
 
+        $this->info('Rosalana Accounts scaffolding installed successfully.');
+
+        $this->info('Publishing Rosalana Accounts configuration...');
+
         // Environment...
         if (! file_exists(base_path('.env'))) {
             copy(base_path('.env.example'), base_path('.env'));
@@ -65,7 +72,7 @@ class InstallCommand extends Command
             preg_replace('/APP_URL=(.*)/', 'APP_URL=http://localhost:8001' . PHP_EOL . 'FRONTEND_URL=http://localhost:3000' . PHP_EOL . 'SANCTUM_STATEFUL_DOMAINS=localhost:3000', file_get_contents(base_path('.env')))
         );
 
-        $this->call('vandor:publish',[
+        $this->call('vendor:publish',[
             '--tag' => 'rosalana-accounts-migrations',
             '--force' => true,
         ]);
