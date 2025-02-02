@@ -30,7 +30,7 @@ class InstallCommand extends Command
      */
     public function handle()
     {
-        $this->runCommands(['php artisan install:api']);
+        $this->call('install:api');
 
         $files = new Filesystem;
 
@@ -63,7 +63,9 @@ class InstallCommand extends Command
             preg_replace('/APP_URL=(.*)/', 'APP_URL=http://localhost:8001' . PHP_EOL . 'FRONTEND_URL=http://localhost:3000' . PHP_EOL . 'SANCTUM_STATEFUL_DOMAINS=localhost:3000', file_get_contents(base_path('.env')))
         );
 
-        $this->runCommands(['php artisan migrate --tag=rosalana-accounts-migrations']);
+        $this->call('migrate',[
+            '--tag' => 'rosalana-accounts-migrations',
+        ]);
 
         $this->info('Rosalana Accounts scaffolding installed successfully.');
     }
