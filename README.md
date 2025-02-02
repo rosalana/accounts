@@ -52,10 +52,11 @@ To make everything easier, the package provides predefined files for user authen
 ```bash
 Http
 ├── Controllers
-│   ├── Auth
-│   │   ├── AuthenticatedSessionController.php
-│   │   └── RegisteredUserController.php
-│   └── Requests
+│   └── Auth
+│       ├── AuthenticatedSessionController.php
+│       └── RegisteredUserController.php
+├── Requests
+│   └── Auth
 │       ├── LoginRequest.php
 │       └── RegisterRequest.php
 └── routes
