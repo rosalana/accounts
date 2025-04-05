@@ -4,9 +4,7 @@ namespace Rosalana\Accounts\Providers;
 
 use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
-use Rosalana\Accounts\Contracts\AuthContract;
 use Rosalana\Accounts\Services\AccountsManager;
-use Rosalana\Accounts\Services\AuthService;
 use Rosalana\Core\Services\Basecamp\Manager;
 
 class RosalanaAccountsServiceProvider extends ServiceProvider
@@ -19,7 +17,8 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
         $this->app->singleton('rosalana.accounts', function() {
             return new AccountsManager(
                 new \Rosalana\Accounts\Services\AuthService(),
-                new \Rosalana\Accounts\Session\TokenSession()
+                new \Rosalana\Accounts\Session\TokenSession(),
+                new \Rosalana\Accounts\Session\AuthSession()
             );
         });
 
