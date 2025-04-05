@@ -18,7 +18,8 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
             return new AccountsManager(
                 new \Rosalana\Accounts\Services\AuthService(),
                 new \Rosalana\Accounts\Session\TokenSession(),
-                new \Rosalana\Accounts\Session\AuthSession()
+                new \Rosalana\Accounts\Session\AuthSession(),
+                new \Rosalana\Accounts\Services\UsersService()
             );
         });
 

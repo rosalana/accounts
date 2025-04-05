@@ -10,7 +10,8 @@ class AccountsManager
     public function __construct(
         protected AuthService $auth,
         protected TokenSession $token,
-        protected AuthSession $session
+        protected AuthSession $session,
+        protected UsersService $users
     ) {}
 
     public function token(): TokenSession
@@ -21,6 +22,11 @@ class AccountsManager
     public function session(): AuthSession
     {
         return $this->session;
+    }
+
+    public function users(): UsersService
+    {
+        return $this->users;
     }
 
     public function __call(string $method, array $arguments)
