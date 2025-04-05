@@ -21,7 +21,7 @@ class Accounts implements Package
 
                     ConfigBuilder::new('accounts')
                         ->add('model', 'App\\Models\\User::class')
-                        ->add('identifier', 'rosalana_account_id')
+                        ->add('identifier', "'rosalana_account_id'")
                         ->comment(
                             'Describe how Basecamp account is linked to your local Eloquent model. If you wish to change the identifier, make sure to update the provided database migration as well.',
                             'Rosalana Basecamp Account Link'
