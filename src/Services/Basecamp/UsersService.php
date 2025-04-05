@@ -2,77 +2,53 @@
 
 namespace Rosalana\Accounts\Services\Basecamp;
 
-use Rosalana\Accounts\Exceptions\RosalanaAuthException;
-use Rosalana\Accounts\Exceptions\RosalanaCredentialsException;
-use Rosalana\Accounts\Exceptions\RosalanaTokenRefreshException;
-use Rosalana\Accounts\Services\RosalanaSession;
+use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Services\Basecamp\Service;
 
 class UsersService extends Service
 {
     public function login(array $credentials)
     {
-        $response = $this->manager->post('/api/v1/login', $credentials);
-
-        if ($response->json('error')) {
-            throw new RosalanaAuthException($response->json('error'), 401);
-        }
-
-        if ($response->json('errors')) {
-            throw new RosalanaCredentialsException($response->json('errors'), 401);
-        }
-
-        return $response;
+        return $this->manager
+            ->withPipeline('user.login')
+            ->post('auth/login', $credentials);
     }
 
     public function logout()
     {
-        $token = RosalanaSession::get();
-        $response = $this->manager->withAuth($token)->post('/api/v1/logout');
-
-        if ($response->json('error')) {
-            throw new RosalanaAuthException($response->json('error'), 401);
-        }
-
-        return $response;
+        return $this->manager
+            ->withAuth(Accounts::token()->get())
+            ->withPipeline('user.logout')
+            ->post('auth/logout');
     }
 
-    public function register(array $credentials)
+    public function register(array $data)
     {
-        $response = $this->manager->post('/api/v1/register', $credentials);
-
-        if ($response->json('error')) {
-            throw new RosalanaAuthException($response->json('error'), 401);
-        }
-
-        if ($response->json('errors')) {
-            throw new RosalanaCredentialsException($response->json('errors'), 401);
-        }
-
-        return $response;
+        return $this->manager
+            ->withPipeline('user.register')
+            ->post('auth/register', $data);
     }
 
     public function refresh()
     {
-        $token = RosalanaSession::get();
-        $response = $this->manager->withAuth($token)->post('/api/v1/refresh');
-
-        if ($response->json('error')) {
-            throw new RosalanaTokenRefreshException($response->json('error'), 401);
-        }
-
-        return $response;
+        return $this->manager
+            ->withAuth(Accounts::token()->get())
+            ->withPipeline('user.refresh')
+            ->post('auth/refresh');
     }
 
     public function current()
     {
-        $token = RosalanaSession::get();
-        $response = $this->manager->withAuth($token)->get('/api/v1/me');
+        return $this->manager
+            ->withAuth(Accounts::token()->get())
+            ->withPipeline('user.current')
+            ->get('auth/me');
+    }
 
-        if ($response->json('error')) {
-            throw new RosalanaAuthException($response->json('error'), 401);
-        }
-
-        return $response;
+    public function find(string $id)
+    {
+        return $this->manager
+            ->withAuth(Accounts::token()->get())
+            ->get("/users/{$id}");
     }
 }

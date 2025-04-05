@@ -2,107 +2,43 @@
 
 namespace Rosalana\Accounts\Services;
 
-use Illuminate\Contracts\Auth\Authenticatable;
-use Rosalana\Accounts\Contracts\AuthContract;
-use Illuminate\Support\Facades\Auth;
 use Rosalana\Core\Facades\Basecamp;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
 
-class AuthService implements AuthContract
+class AuthService
 {
-    public function login(array $credentials): Authenticatable
+    public function login(array $credentials)
     {
-        $response = Basecamp::users()->login($credentials);
-
-        $user = $response->json('data.user');
-        $token = $response->json('data.token');
-
-        $localUser = $this->syncUser($user);
-
-        $this->localLogin($localUser, $token);
-
-        // fire event
-
-        return $localUser;
+        // add logic later...
+        return Basecamp::users()->login($credentials);
     }
 
-    public function logout(): void
+    public function logout()
     {
-        Basecamp::users()->logout();
-        $this->localLogout();
+        // add logic later...
+        return Basecamp::users()->logout();
     }
 
-    public function register(array $credentials): Authenticatable
+    public function register(array $credentials)
     {
-        $response = Basecamp::users()->register($credentials);
-
-        $user = $response->json('data.user');
-        $token = $response->json('data.token');
-
-        $localUser = $this->syncUser($user);
-
-        $this->localLogin($localUser, $token);
-
-        // fire event
-
-        return $localUser;
+        // add logic later...
+        return Basecamp::users()->register($credentials);
     }
 
-    public function refresh(): void
+    public function refresh()
     {
-        try {
-            $response = Basecamp::users()->refresh();
-        } catch (\Rosalana\Accounts\Exceptions\RosalanaTokenRefreshException $e) {
-            $this->localLogout();
-            throw $e;
-        }
-
-        $token = $response->json('data.token');
-
-        $decode = JWT::decode($token, new Key(env('JWT_SECRET'), 'HS256'));
-        $user = \App\Models\User::where('rosalana_account_id', $decode->sub)->first();
-
-        $this->localLogin($user, $token);
-
-        // fire event
+        // add logic later...
+        return Basecamp::users()->refresh();
     }
 
-    public function current(): Authenticatable
+    public function current()
     {
-        $response = Basecamp::users()->current();
-
-        $user = $response->json('data.user');
-
-        return \App\Models\User::where('rosalana_account_id', $user['id'])->firstOrFail();
+        // add logic later...
+        return Basecamp::users()->current();
     }
 
-
-    public function syncUser($user)
+    public function find(string $id)
     {
-        return \App\Models\User::updateOrCreate(
-            ['rosalana_account_id' => $user['id']],
-            [
-                'name' => $user['name'] ?? $user['email'],
-                'email' => $user['email'],
-            ]
-        );
-    }
-
-    public function localLogin($localUser, $token)
-    {
-        Auth::login($localUser);
-        RosalanaSession::create($token);
-
-        session()->regenerate();
-    }
-
-    public function localLogout()
-    {
-        Auth::logout();
-        RosalanaSession::forget();
-
-        session()->invalidate();
-        session()->regenerateToken();
+        // add logic later...
+        return Basecamp::users()->find($id);
     }
 }
