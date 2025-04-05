@@ -9,7 +9,7 @@ class Accounts implements Package
 {
     public function resolvePublished(): bool
     {
-        return false;
+        return ConfigBuilder::exists('accounts');
     }
 
     public function publish(): array
