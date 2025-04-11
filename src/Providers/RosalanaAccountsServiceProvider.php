@@ -33,6 +33,8 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
+        // přidat validaci configu aby chyby vylítly hned při startu
+
         $this->publishes([
             __DIR__ . '/../../database/migrations/' => database_path('migrations'),
         ], 'rosalana-accounts-migrations');

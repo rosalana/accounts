@@ -21,9 +21,21 @@ class AuthSession
     public static function authorize(Authenticatable $user, string $token): void
     {
         Auth::login($user);
-        // TokenSession::set($token);
         Accounts::token()->set($token);
 
         session()->regenerate();
     }
+
+    public static function current(): ?Authenticatable
+    {
+        return Auth::user();
+    }
+
+    public static function refresh($token): void
+    {
+        static::authorize(
+            static::current(),
+            $token
+        );
+    } 
 }

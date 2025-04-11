@@ -6,6 +6,7 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Rosalana\Accounts\Facades\Accounts;
+use Rosalana\Core\Exceptions\BasecampUnauthorizedException;
 use Rosalana\Core\Exceptions\BasecampValidationException;
 use Rosalana\Core\Facades\Basecamp;
 
@@ -19,7 +20,7 @@ class AuthService
             throw ValidationException::withMessages($e->getErrors());
         }
 
-        return $this->authenticateThroughBasecamp($response);
+        return $this->authenticateAndSynchronize($response);
     }
 
     public function logout(): void
@@ -36,28 +37,23 @@ class AuthService
             throw ValidationException::withMessages($e->getErrors());
         }
 
-        return $this->authenticateThroughBasecamp($response);
+        return $this->authenticateAndSynchronize($response);
     }
 
     public function refresh()
     {
-        // add logic later...
-        return Basecamp::users()->refresh();
+        try {
+            $response = Basecamp::users()->refresh();
+        } catch (BasecampUnauthorizedException $e) {
+            Accounts::session()->terminate();
+        }
+
+        $token = $response->json('meta.token');
+
+        Accounts::session()->refresh($token);
     }
 
-    public function current()
-    {
-        // add logic later...
-        return Basecamp::users()->current();
-    }
-
-    public function find(string $id)
-    {
-        // add logic later...
-        return Basecamp::users()->find($id);
-    }
-
-    protected function authenticateThroughBasecamp(Response $response): Authenticatable
+    protected function authenticateAndSynchronize(Response $response): Authenticatable
     {
         $basecampUser = $response->json('data');
         $token = $response->json('meta.token');
