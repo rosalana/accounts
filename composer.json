@@ -18,7 +18,6 @@
   "require": {
     "php": "^8.2",
     "illuminate/support": "^12.0",
-    "firebase/php-jwt": "^6.10",
     "rosalana/core": "^0 || dev-master"
   },
   "require-dev": {
