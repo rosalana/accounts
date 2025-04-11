@@ -11,7 +11,6 @@ class AuthSession
     public static function terminate(): void
     {
         Auth::logout();
-        // TokenSession::forget();
         Accounts::token()->forget();
 
         session()->invalidate();
