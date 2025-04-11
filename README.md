@@ -5,45 +5,149 @@ This package is a part of the Rosalana eco-system. It provides a way to manage a
 > **Note:** This package is a extension of the [Rosalana Core](https://packagist.org/packages/rosalana/core) package.
 
 ## Table of Contents
-- [Features](#features)
-    - [Users Service](#users-service)
-    - [RosalanaAuth Facade](#rosalanaauth-facade)
-    - [auth.rosalana Middleware](#authrosalana-middleware)
-    - [Stubs](#stubs)
+
 - [Installation](#installation)
 - [Configuration](#configuration)
+- [Features](#features)
+  - [Accounts](#accounts)
+  - [Basecamp Bindings](#basecamp-bindings)
+  - [Stubs](#stubs)
+- [May Show in the Future](#may-show-in-the-future)
 - [License](#license)
 
-<!-- - [May Show in the Future](#may-show-in-the-future) -->
+## Installation
+
+To install the `rosalana/accounts` package, you must first have the `rosalana/core` package installed. If you haven't installed it yet, please refer to the `rosalana/core` documentation.
+
+After installing the `rosalana/core` package, use the `rosalana:add` command from the Rosalana CLI and select `rosalana/accounts` from the list:
+
+```bash
+php artisan rosalana:add
+```
+
+After installing the package, you should publish its assets using the following command:
+
+```bash
+php artisan rosalana:publish
+```
+
+You can specify which files to publish. Publishing **the configuration files is required** to set up the package properly. Other files are optional and can be published as needed. However, it is recommended to publish all files to take full advantage of the package features.
+
+## Configuration
+
+After publishing the package, you will find a `rosalana.php` configuration file in the `config` directory of your Laravel application. You can customize these options according to your needs.
+
+This file will grow over time as you add more Rosalana packages to your application. Each package contributes its own configuration section. The `rosalana.php` file serves as the central configuration hub for all Rosalana packages.
+
+`rosalana/accounts` package provides configuration options for:
+
+- `accounts`: This section contains bindings between the Basecamp Account and the local Authenticable model. It allows you to specify model or Basecamp Account IDs for each account. This is useful for syncing users and their accounts in the Rosalana eco-system.
 
 ## Features
 
-### Users Service
+### Accounts
 
-The `UsersService` extends the `Basecamp Facade` and provides a way to get users from the Basecamp API.
+The `rosalana/accounts` package integrates deeply with Laravel’s native authentication system, while seamlessly connecting your application to the `Rosalana Basecamp` server.
+
+This means you can continue using Laravel’s standard auth() functions, guards, and session handling — but behind the scenes, all authentication requests (login, register, logout, refresh) are securely forwarded to `Basecamp` and handled `automatically`.
+
+> You don’t need to manually handle API tokens — the session system handles it automatically behind the scenes.
+
+#### Automatic User Syncing
+
+Whenever a user logs in or registers through Basecamp, their data is automatically synchronized with your local application using the configured model and identifier:
+
+- If the user exists locally → it’s updated.
+- If not → a new local user is created.
+
+This enables cross-app authentication across the Rosalana ecosystem — logging into one app makes the user accessible in others, without needing to register again.
+
+#### Logging In
+
+You can authenticate the user using a single command:
 
 ```php
-Basecamp::users()->login($credentials);
+use Rosalana\Accounts\Facades\Accounts;
+
+$user = Accounts::login([
+    'email' => 'john@example.com',
+    'password' => 'secret',
+]);
 ```
 
-### RosalanaAuth Facade
+- This will contact Basecamp, validate creadentials, fetch user data and token, and create a valid Laravel session.
+- The authenticated user is returned as an instance of you configured `Authenticable` model.
 
-The `RosalanaAuth::class` is a facade that provides a way to authenticate users in the Rosalana eco-system. It handles the authentication and syncs the user with the accounts.
-
-In the background, it users the `UsersService` to get access to the Basecamp API.
+#### Registering a New User
 
 ```php
-RosalanaAuth::login($credentials);
-RosalanaAuth::logout();
+$user = Accounts::register([
+    'name' => 'John Doe',
+    'email' => 'john@example.com',
+    'password' => 'secret',
+]);
 ```
 
-It also create a local session for the user, managing cookies for SPA.
+This creates a new user in Basecamp, synchronizes it locally, and logs the user in.
 
-### auth.rosalana Middleware
+#### Logging Out
 
-The `auth.rosalana` middleware is a middleware that checks if the user is authenticated via the access token. Checks are made offline, so it doesn't make any requests to the Basecamp API.
+```php
+Accounts::logout();
+```
 
-If the token is no longer valid it will try to refresh it via the `RosalanaAuth` facade. If the refresh fails, the user will be logged out.
+This logs the user out from both your application and Basecamp, and fully clears their session and token.
+
+#### Refreshing the Session Token
+
+```php
+Accounts::refresh();
+```
+
+- This will attempt to get a new token from Basecamp using the currently stored one.
+- If the token is still valid → it will be replaced and the session continues.
+- If the token is invalid or expired → the user is logged out automatically.
+
+#### Accessing the Current User
+
+You can keep using Laravel's standard way:
+
+```php
+auth()->user();
+```
+
+This works seamlessly, as `rosalana/accounts` uses Laravel's built-in authentication engine under the hood - no custom guards, no suprises.
+
+#### Advanced Access
+
+In some cases, you may want to interact directly with the session or token management:
+
+```php
+// Get the currently stored Basecamp token
+$token = Accounts::token()->get();
+
+// Manually refresh the session token
+Accounts::session()->refresh($newToken);
+
+// Fully clear session and token
+Accounts::session()->terminate();
+```
+
+This gives you full control if you need to customize how authentication is handled in special cases (e.g. background jobs, API auth, etc).
+
+### Basecamp Bindings
+
+The `rosalana/accounts` package registers a `Basecamp Bindings` under the key `users`. This means that you can use the `Basecamp` facade to access the Basecamp API and get users.
+
+```php
+use Rosalana\Accounts\Facades\Basecamp;
+
+Basecamp::users()->find($id);
+```
+
+> Bindings provides pre-configured methods which internally handle the Basecamp API requests, including authentication and pipeline integration. You no longer need to manually specify endpoints, tokens or headers.
+
+Beaware that bindings are just a route definitions. No handling is done after that. For further usage needs to be extended somewhere.
 
 ### Stubs
 
@@ -65,30 +169,9 @@ routes
 └── auth.php
 ```
 
-## Installation
+## May Show in the Future
 
-You can install `rosalana/accounts` via Composer by running the following command:
-
-```bash
-composer require rosalana/accounts
-```
-
-After installing the package, you can publish its assets using the following command:
-
-```bash
-php artisan rosalana:accounts:install
-```
-
-> **Warning:** This is a one-time operation, don't run it multiple times.
-
-> **Note:** API of commands may change in the future versions.
-
-## Configuration
-
-The configuration file is located at `config/rosalana.php`. You can modify the configuration file to change the behavior of the package.
-
-This file is published after installing `rosalana/core` package.
-
+Stay tuned — we're actively shaping the foundation of the Rosalana ecosystem.
 
 ## License
 
