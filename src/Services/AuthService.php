@@ -3,7 +3,7 @@
 namespace Rosalana\Accounts\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
-use Illuminate\Http\Response;
+use Illuminate\Http\Client\Response;
 use Illuminate\Validation\ValidationException;
 use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Exceptions\BasecampUnauthorizedException;
