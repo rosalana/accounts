@@ -2,14 +2,27 @@
 
 namespace Rosalana\Accounts\Services;
 
+use Illuminate\Validation\ValidationException;
+use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Facades\Basecamp;
 
 class AuthService
 {
     public function login(array $credentials)
     {
-        // add logic later...
-        return Basecamp::users()->login($credentials);
+        try {
+            $response = Basecamp::users()->login($credentials);
+        } catch (\Rosalana\Core\Exceptions\BasecampValidationException $e) {
+            throw ValidationException::withMessages($e->getErrors());
+        }
+
+        $basecampUser = $response->json('data');
+        $token = $response->json('meta.token');
+
+        $user = Accounts::users()->sync($basecampUser);
+        Accounts::session()->authorize($user, $token);
+
+        return $user;
     }
 
     public function logout()
