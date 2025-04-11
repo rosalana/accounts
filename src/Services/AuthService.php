@@ -2,39 +2,41 @@
 
 namespace Rosalana\Accounts\Services;
 
+use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Http\Response;
 use Illuminate\Validation\ValidationException;
 use Rosalana\Accounts\Facades\Accounts;
+use Rosalana\Core\Exceptions\BasecampValidationException;
 use Rosalana\Core\Facades\Basecamp;
 
 class AuthService
 {
-    public function login(array $credentials)
+    public function login(array $credentials): Authenticatable
     {
         try {
             $response = Basecamp::users()->login($credentials);
-        } catch (\Rosalana\Core\Exceptions\BasecampValidationException $e) {
+        } catch (BasecampValidationException $e) {
             throw ValidationException::withMessages($e->getErrors());
         }
 
-        $basecampUser = $response->json('data');
-        $token = $response->json('meta.token');
-
-        $user = Accounts::users()->sync($basecampUser);
-        Accounts::session()->authorize($user, $token);
-
-        return $user;
+        return $this->authenticateThroughBasecamp($response);
     }
 
-    public function logout()
+    public function logout(): void
     {
-        // add logic later...
-        return Basecamp::users()->logout();
+        Basecamp::users()->logout();
+        Accounts::session()->terminate();
     }
 
-    public function register(array $credentials)
+    public function register(array $credentials): Authenticatable
     {
-        // add logic later...
-        return Basecamp::users()->register($credentials);
+        try {
+            $response = Basecamp::users()->register($credentials);
+        } catch (BasecampValidationException $e) {
+            throw ValidationException::withMessages($e->getErrors());
+        }
+
+        return $this->authenticateThroughBasecamp($response);
     }
 
     public function refresh()
@@ -53,5 +55,16 @@ class AuthService
     {
         // add logic later...
         return Basecamp::users()->find($id);
+    }
+
+    protected function authenticateThroughBasecamp(Response $response): Authenticatable
+    {
+        $basecampUser = $response->json('data');
+        $token = $response->json('meta.token');
+
+        $user = Accounts::users()->sync($basecampUser);
+        Accounts::session()->authorize($user, $token);
+
+        return $user;
     }
 }
