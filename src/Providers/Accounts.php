@@ -2,6 +2,7 @@
 
 namespace Rosalana\Accounts\Providers;
 
+use Illuminate\Support\Facades\Artisan;
 use Rosalana\Core\Contracts\Package;
 use Rosalana\Core\Support\Config;
 
@@ -27,6 +28,15 @@ class Accounts implements Package
                             'Rosalana Basecamp Account Link'
                         )
                         ->save();
+                }
+            ],
+            'migrations' => [
+                'label' => 'Publish database migrations',
+                'run' => function () {
+                    Artisan::call('vendor:publish', [
+                        '--tag' => 'rosalana-accounts-migrations',
+                        '--force' => true
+                    ]);
                 }
             ]
         ];

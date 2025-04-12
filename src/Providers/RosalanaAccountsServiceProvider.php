@@ -33,9 +33,9 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
-        $router->prependMiddleware(\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
-
-        // přidat validaci configu aby chyby vylítly hned při startu
+        if (!$this->app->runningInConsole()) {
+            $router->prependMiddleware(\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
+        }
 
         $this->publishes([
             __DIR__ . '/../../database/migrations/' => database_path('migrations'),
