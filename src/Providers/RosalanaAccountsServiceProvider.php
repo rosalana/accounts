@@ -2,7 +2,6 @@
 
 namespace Rosalana\Accounts\Providers;
 
-use Illuminate\Routing\Router;
 use Illuminate\Support\ServiceProvider;
 use Rosalana\Accounts\Services\AccountsManager;
 use Rosalana\Core\Services\Basecamp\Manager;
@@ -31,10 +30,10 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
     /**
      * Boot services.
      */
-    public function boot(Router $router)
+    public function boot()
     {
         if (!$this->app->runningInConsole()) {
-            $router->prependMiddleware(\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
+            $this->app['router']->prependMiddleware(\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
         }
 
         $this->publishes([
