@@ -20,6 +20,7 @@ class UsersService
         return $model::updateOrCreate(
             [$identifier => $basecampUser['id']],
             [
+                $identifier => $basecampUser['id'],
                 'name' => $basecampUser['name'] ?? $basecampUser['email'],
                 'email' => $basecampUser['email'],
             ]
