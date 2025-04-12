@@ -31,7 +31,11 @@ class TokenSession
         $expiresAt = session()->get('rosalana.token_expires_at');
 
         if ($expiresAt) {
-            return Carbon::parse($expiresAt);
+            try {
+                return Carbon::parse($expiresAt);
+            } catch (\Exception) {
+                return null;
+            }
         }
 
         return null;
