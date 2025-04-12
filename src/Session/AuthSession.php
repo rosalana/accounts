@@ -17,10 +17,10 @@ class AuthSession
         session()->regenerateToken();
     }
 
-    public static function authorize(Authenticatable $user, string $token): void
+    public static function authorize(Authenticatable $user, string $token, ?string $expiresAt = null): void
     {
         Auth::login($user);
-        Accounts::token()->set($token);
+        Accounts::token()->set($token, $expiresAt);
 
         session()->regenerate();
     }
@@ -30,11 +30,12 @@ class AuthSession
         return Auth::user();
     }
 
-    public static function refresh($token): void
+    public static function refresh(string $token, ?string $expiresAt = null): void
     {
         static::authorize(
             static::current(),
-            $token
+            $token,
+            $expiresAt
         );
     } 
 }

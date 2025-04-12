@@ -49,17 +49,19 @@ class AuthService
         }
 
         $token = $response->json('meta.token');
+        $expiresAt = $response->json('meta.expires_at');
 
-        Accounts::session()->refresh($token);
+        Accounts::session()->refresh($token, $expiresAt);
     }
 
     protected function authenticateAndSynchronize(Response $response): Authenticatable
     {
         $basecampUser = $response->json('data');
         $token = $response->json('meta.token');
+        $expiresAt = $response->json('meta.expires_at');
 
         $user = Accounts::users()->sync($basecampUser);
-        Accounts::session()->authorize($user, $token);
+        Accounts::session()->authorize($user, $token, $expiresAt);
 
         return $user;
     }
