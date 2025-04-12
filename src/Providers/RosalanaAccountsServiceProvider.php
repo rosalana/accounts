@@ -14,7 +14,7 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
      */
     public function register()
     {
-        $this->app->singleton('rosalana.accounts', function() {
+        $this->app->singleton('rosalana.accounts', function () {
             return new AccountsManager(
                 new \Rosalana\Accounts\Services\AuthService(),
                 new \Rosalana\Accounts\Session\TokenSession(),
@@ -33,6 +33,8 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
      */
     public function boot(Router $router)
     {
+        $router->prependMiddleware(\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
+
         // přidat validaci configu aby chyby vylítly hned při startu
 
         $this->publishes([
