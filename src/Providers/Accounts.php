@@ -3,13 +3,13 @@
 namespace Rosalana\Accounts\Providers;
 
 use Rosalana\Core\Contracts\Package;
-use Rosalana\Core\Support\ConfigBuilder;
+use Rosalana\Core\Support\Config;
 
 class Accounts implements Package
 {
     public function resolvePublished(): bool
     {
-        return ConfigBuilder::exists('accounts');
+        return Config::exists('accounts');
     }
 
     public function publish(): array
@@ -19,7 +19,7 @@ class Accounts implements Package
                 'label' => 'Publish configuration settings to rosalana.php',
                 'run' => function () {
 
-                    ConfigBuilder::new('accounts')
+                    Config::new('accounts')
                         ->add('model', 'App\\Models\\User::class')
                         ->add('identifier', "'rosalana_account_id'")
                         ->comment(
