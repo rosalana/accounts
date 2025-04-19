@@ -137,13 +137,17 @@ This gives you full control if you need to customize how authentication is handl
 
 ### Basecamp Bindings
 
-The `rosalana/accounts` package registers a `Basecamp Bindings` under the key `users`. This means that you can use the `Basecamp` facade to access the Basecamp API and get users.
+The `rosalana/accounts` package registers a `Basecamp Bindings` under the key `users` and `auth`. This means that you can use the `Basecamp` facade to access the Basecamp API and get users.
 
 ```php
 use Rosalana\Accounts\Facades\Basecamp;
 
 Basecamp::users()->find($id);
+Basecamp::auth()->current();
+Basecamp::auth()->login($email, $password);
 ```
+
+
 
 > Bindings provides pre-configured methods which internally handle the Basecamp API requests, including authentication and pipeline integration. You no longer need to manually specify endpoints, tokens or headers.
 

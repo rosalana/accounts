@@ -15,7 +15,7 @@ class AuthService
     public function login(array $credentials): Authenticatable
     {
         try {
-            $response = Basecamp::users()->login($credentials);
+            $response = Basecamp::auth()->login($credentials);
         } catch (BasecampValidationException $e) {
             throw ValidationException::withMessages($e->getErrors());
         }
@@ -25,14 +25,14 @@ class AuthService
 
     public function logout(): void
     {
-        Basecamp::users()->logout();
+        Basecamp::auth()->logout();
         Accounts::session()->terminate();
     }
 
     public function register(array $credentials): Authenticatable
     {
         try {
-            $response = Basecamp::users()->register($credentials);
+            $response = Basecamp::auth()->register($credentials);
         } catch (BasecampValidationException $e) {
             throw ValidationException::withMessages($e->getErrors());
         }
@@ -43,7 +43,7 @@ class AuthService
     public function refresh()
     {
         try {
-            $response = Basecamp::users()->refresh();
+            $response = Basecamp::auth()->refresh();
         } catch (BasecampUnauthorizedException $e) {
             Accounts::session()->terminate();
             return;

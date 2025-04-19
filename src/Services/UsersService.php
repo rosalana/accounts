@@ -32,7 +32,7 @@ class UsersService
         [$model, $identifier] = $this->resolveModel();
 
         try {
-            $response = Basecamp::users()->current();
+            $response = Basecamp::auth()->current();
         } catch (BasecampUnauthorizedException $e) {
             Accounts::session()->terminate();
             throw $e;

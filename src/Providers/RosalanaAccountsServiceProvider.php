@@ -23,6 +23,7 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
         });
 
         $this->app->resolving('rosalana.basecamp', function (Manager $manager) {
+            $manager->registerService('auth', new \Rosalana\Accounts\Services\Basecamp\AuthService());
             $manager->registerService('users', new \Rosalana\Accounts\Services\Basecamp\UsersService());
         });
     }
