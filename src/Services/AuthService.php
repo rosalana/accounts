@@ -46,6 +46,7 @@ class AuthService
             $response = Basecamp::users()->refresh();
         } catch (BasecampUnauthorizedException $e) {
             Accounts::session()->terminate();
+            return;
         }
 
         $token = $response->json('meta.token');
