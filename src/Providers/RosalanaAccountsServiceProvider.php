@@ -33,7 +33,7 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
     public function boot()
     {
         if (!$this->app->runningInConsole()) {
-            $this->app['router']->prependMiddlewareToGroup('web',\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
+            $this->app['router']->pushMiddlewareToGroup('web',\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
         }
 
         $this->publishes([
