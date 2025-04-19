@@ -171,6 +171,11 @@ routes
 
 ## May Show in the Future
 
+- **Password Reset**: A feature to reset the password for a user.
+- **Email Verification**: A feature to verify the email address of a user.
+- **OAuth2**: A feature to enable OAuth2 authentication for a user.
+- **Two-Factor Authentication**: A feature to enable two-factor authentication for a user.
+
 Stay tuned — we're actively shaping the foundation of the Rosalana ecosystem.
 
 ## License
