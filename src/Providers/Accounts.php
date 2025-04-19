@@ -38,6 +38,15 @@ class Accounts implements Package
                         '--force' => true
                     ]);
                 }
+            ],
+            'stubs' => [
+                'label' => 'Publish auth controllers and routes',
+                'run' => function () {
+                    Artisan::call('vendor:publish', [
+                        '--tag' => 'rosalana-accounts-stubs',
+                        '--force' => true
+                    ]);
+                }
             ]
         ];
     }

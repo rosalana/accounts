@@ -39,5 +39,11 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../../database/migrations/' => database_path('migrations'),
         ], 'rosalana-accounts-migrations');
+
+        $this->publishes([
+            __DIR__ . '/../../stubs/Http/Controllers/Auth' => app_path('Http/Controllers/Auth'),
+            __DIR__ . '/../../stubs/Http/Requests/Auth' => app_path('Http/Requests/Auth'),
+            __DIR__ . '/../../stubs/routes/auth.php' => base_path('routes/auth.php'),
+        ], 'rosalana-accounts-stubs');
     }
 }

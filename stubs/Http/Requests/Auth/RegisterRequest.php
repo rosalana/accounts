@@ -3,7 +3,7 @@
 namespace App\Http\Requests\Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Rosalana\Accounts\Facades\RosalanaAuth;
+use Rosalana\Accounts\Facades\Accounts;
 
 class RegisterRequest extends FormRequest
 {
@@ -23,9 +23,7 @@ class RegisterRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            //
         ];
     }
 
@@ -39,6 +37,6 @@ class RegisterRequest extends FormRequest
      */
     public function register()
     {
-        RosalanaAuth::register($this->only('name', 'email', 'password', 'password_confirmation'));
+        Accounts::register($this->only('name', 'email', 'password', 'password_confirmation'));
     }
 }

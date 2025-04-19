@@ -7,9 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
-use Rosalana\Accounts\Exceptions\RosalanaAuthException;
-use Rosalana\Accounts\Exceptions\RosalanaCredentialsException;
-use Rosalana\Accounts\Facades\RosalanaAuth;
+use Rosalana\Accounts\Facades\Accounts;
 
 class LoginRequest extends FormRequest
 {
@@ -29,8 +27,7 @@ class LoginRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'email' => ['required', 'string', 'email', 'max:255'],
-            'password' => ['required', 'string'],
+            //
         ];
     }
 
@@ -46,9 +43,9 @@ class LoginRequest extends FormRequest
         $this->ensureIsNotRateLimited();
 
         try {
-            RosalanaAuth::login($this->only('email', 'password'));
+            Accounts::login($this->only('email', 'password'));
             RateLimiter::clear($this->throttleKey());
-        } catch (RosalanaAuthException | RosalanaCredentialsException $e) {
+        } catch (\Exception $e) {
             RateLimiter::hit($this->throttleKey());
             throw $e;
         }
@@ -82,6 +79,6 @@ class LoginRequest extends FormRequest
      */
     public function throttleKey()
     {
-        return Str::transliterate(Str::lower($this->input('email'))).'|'.$this->ip();
+        return Str::transliterate(Str::lower($this->string('email'))) . '|' . $this->ip();
     }
 }
