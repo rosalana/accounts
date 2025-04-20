@@ -10,7 +10,7 @@ class UsersService extends Service
     public function find(string $id)
     {
         return $this->manager
-            ->withAuth(Accounts::token()->get())
-            ->get("/users/{$id}");
+            ->withAuth()
+            ->get("users/{$id}");
     }
 }

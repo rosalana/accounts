@@ -2,7 +2,6 @@
 
 namespace Rosalana\Accounts\Services\Basecamp;
 
-use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Services\Basecamp\Service;
 
 class AuthService extends Service
@@ -17,7 +16,7 @@ class AuthService extends Service
     public function logout()
     {
         return $this->manager
-            ->withAuth(Accounts::token()->get())
+            ->withAuth()
             ->withPipeline('user.logout')
             ->post('auth/logout');
     }
@@ -32,7 +31,7 @@ class AuthService extends Service
     public function refresh()
     {
         return $this->manager
-            ->withAuth(Accounts::token()->get())
+            ->withAuth()
             ->withPipeline('user.refresh')
             ->post('auth/refresh');
     }
@@ -40,7 +39,7 @@ class AuthService extends Service
     public function current()
     {
         return $this->manager
-            ->withAuth(Accounts::token()->get())
+            ->withAuth()
             ->withPipeline('user.current')
             ->get('auth/me');
     }

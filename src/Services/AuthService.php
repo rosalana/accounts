@@ -6,8 +6,8 @@ use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Client\Response;
 use Illuminate\Validation\ValidationException;
 use Rosalana\Accounts\Facades\Accounts;
-use Rosalana\Core\Exceptions\BasecampUnauthorizedException;
-use Rosalana\Core\Exceptions\BasecampValidationException;
+use Rosalana\Core\Exceptions\Http\BasecampUnauthorizedException;
+use Rosalana\Core\Exceptions\Http\BasecampValidationException;
 use Rosalana\Core\Facades\Basecamp;
 
 class AuthService

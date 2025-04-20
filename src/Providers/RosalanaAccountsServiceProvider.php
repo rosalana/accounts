@@ -16,7 +16,7 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
         $this->app->singleton('rosalana.accounts', function () {
             return new AccountsManager(
                 new \Rosalana\Accounts\Services\AuthService(),
-                new \Rosalana\Accounts\Session\TokenSession(),
+                new \Rosalana\Core\Session\TokenSession(),
                 new \Rosalana\Accounts\Session\AuthSession(),
                 new \Rosalana\Accounts\Services\UsersService()
             );

@@ -4,7 +4,7 @@ namespace Rosalana\Accounts\Services;
 
 use Illuminate\Contracts\Auth\Authenticatable;
 use Rosalana\Accounts\Facades\Accounts;
-use Rosalana\Core\Exceptions\BasecampUnauthorizedException;
+use Rosalana\Core\Exceptions\Http\BasecampUnauthorizedException;
 use Rosalana\Core\Facades\Basecamp;
 
 class UsersService

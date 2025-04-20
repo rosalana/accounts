@@ -3,7 +3,7 @@
 namespace Rosalana\Accounts\Services;
 
 use Rosalana\Accounts\Session\AuthSession;
-use Rosalana\Accounts\Session\TokenSession;
+use Rosalana\Core\Session\TokenSession;
 
 class AccountsManager
 {
