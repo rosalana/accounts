@@ -45,7 +45,7 @@ class UsersService
         return $model::where($identifier, $response->json('data.id'))->first() ?? $this->sync($response->json('data'));
     }
 
-    public function find(string $id): Authenticatable
+    public function find(string $id): ?Authenticatable
     {
         [$model, $identifier] = $this->resolveModel();
 
@@ -60,7 +60,20 @@ class UsersService
             throw new \InvalidArgumentException("Rosalana Accounts: User ID is required.");
         }
 
-        return $model::where($identifier, $response->json('data.id'))->first() ?? $this->sync($response->json('data'));
+        return $model::where($identifier, $response->json('data.id'))->first() ?? null;
+    }
+
+    public function toLocal(array|null $basecampUser): ?Authenticatable
+    {
+        if (is_null($basecampUser)) return null;
+        
+        [$model, $identifier] = $this->resolveModel();
+
+        if (empty($basecampUser['id'])) {
+            throw new \InvalidArgumentException("Rosalana Accounts: Basecamp user data missing 'id'.");
+        }
+
+        return $model::where($identifier, $basecampUser['id'])->first() ?? null;
     }
 
     protected function resolveModel(): array
