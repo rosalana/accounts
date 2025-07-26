@@ -33,6 +33,8 @@ php artisan rosalana:publish
 
 You can specify which files to publish. Publishing **the configuration files is required** to set up the package properly. Other files are optional and can be published as needed. However, it is recommended to publish all files to take full advantage of the package features.
 
+> Do not forget to add the `rosalana_account_id` identifier to `$fillable` array of your `Authenticable` model. This is required for the package to work properly.
+
 ## Configuration
 
 After publishing the package, you will find a `rosalana.php` configuration file in the `config` directory of your Laravel application. You can customize these options according to your needs.

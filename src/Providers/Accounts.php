@@ -3,11 +3,14 @@
 namespace Rosalana\Accounts\Providers;
 
 use Illuminate\Support\Facades\Artisan;
+use Rosalana\Core\Console\InternalCommands;
 use Rosalana\Core\Contracts\Package;
 use Rosalana\Core\Support\Config;
 
 class Accounts implements Package
 {
+    use InternalCommands;
+
     public function resolvePublished(): bool
     {
         return Config::exists('accounts');
@@ -37,6 +40,12 @@ class Accounts implements Package
                         '--tag' => 'rosalana-accounts-migrations',
                         '--force' => true
                     ]);
+                }
+            ],
+            'env' => [
+                'label' => 'Publish .env variables',
+                'run' => function () {
+                    $this->setEnvValue('SESSION_LIFETIME', '525600');
                 }
             ],
             'stubs' => [

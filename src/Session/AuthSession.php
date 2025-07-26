@@ -32,10 +32,7 @@ class AuthSession
 
     public static function refresh(string $token, ?string $expiresAt = null): void
     {
-        static::authorize(
-            static::current(),
-            $token,
-            $expiresAt
-        );
-    } 
+        Auth::setUser(Auth::user());
+        Accounts::token()->set($token, $expiresAt);
+    }
 }
