@@ -2,7 +2,7 @@
 
 namespace Rosalana\Accounts\Session;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\User;
 use Illuminate\Support\Facades\Auth;
 use Rosalana\Accounts\Facades\Accounts;
 
@@ -17,7 +17,7 @@ class AuthSession
         session()->regenerateToken();
     }
 
-    public static function authorize(Authenticatable $user, string $token, ?string $expiresAt = null): void
+    public static function authorize(User $user, string $token, ?string $expiresAt = null): void
     {
         Auth::login($user);
         Accounts::token()->set($token, $expiresAt);
@@ -25,7 +25,7 @@ class AuthSession
         session()->regenerate();
     }
 
-    public static function current(): ?Authenticatable
+    public static function current(): ?User
     {
         return Auth::user();
     }

@@ -2,14 +2,14 @@
 
 namespace Rosalana\Accounts\Services;
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Illuminate\Foundation\Auth\User;
 use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Exceptions\Http\BasecampUnauthorizedException;
 use Rosalana\Core\Facades\Basecamp;
 
 class UsersService
 {
-    public function sync(array $basecampUser): Authenticatable
+    public function sync(array $basecampUser): User
     {
         [$model, $identifier] = $this->resolveModel();
 
@@ -27,7 +27,7 @@ class UsersService
         );
     }
 
-    public function current(): Authenticatable
+    public function current(): User
     {
         [$model, $identifier] = $this->resolveModel();
 
@@ -45,7 +45,7 @@ class UsersService
         return $model::where($identifier, $response->json('data.id'))->first() ?? $this->sync($response->json('data'));
     }
 
-    public function find(string $id): ?Authenticatable
+    public function find(string $id): ?User
     {
         [$model, $identifier] = $this->resolveModel();
 
@@ -63,7 +63,7 @@ class UsersService
         return $model::where($identifier, $response->json('data.id'))->first() ?? null;
     }
 
-    public function toLocal(array|null $basecampUser): ?Authenticatable
+    public function toLocal(array|null $basecampUser): ?User
     {
         if (is_null($basecampUser)) return null;
         
