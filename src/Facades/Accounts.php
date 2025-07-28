@@ -12,6 +12,8 @@ use Illuminate\Support\Facades\Facade;
  * @method static mixed logout()
  * @method static mixed register(array $credentials)
  * @method static mixed refresh()
+ * 
+ * @see \Rosalana\Accounts\Services\AccountsManager
  */
 class Accounts extends Facade
 {
