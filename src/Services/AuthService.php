@@ -66,10 +66,11 @@ class AuthService
         $user = Accounts::users()->toLocal($response->json('data'));
 
         App::hooks()->run('user:refresh', [
-            'user' => [
-                ...$response->json('data', []),
-                'local_id' => $user?->id ?? null,
-            ],
+            'user' => collect($response->json('data', []))
+                ->except('id')
+                ->merge(['local_id' => $user->id])
+                ->merge(['remote_id' => $response->json('data.id') ?? null])
+                ->all(),
             'token' => $token,
             'expires_at' => $expiresAt,
         ]);
@@ -84,11 +85,17 @@ class AuthService
         $user = Accounts::users()->sync($basecampUser);
         Accounts::session()->authorize($user, $token, $expiresAt);
 
+        App::context()->put("user.{$user->id}", [
+            'local_id' => $user->id,
+            'remote_id' => $basecampUser['id'],
+        ]);
+
         App::hooks()->run('user:' . $action, [
-            'user' => [
-                ...$basecampUser,
-                'local_id' => $user->id,
-            ],
+            'user' => collect($basecampUser)
+                ->except('id')
+                ->merge(['local_id' => $user->id])
+                ->merge(['remote_id' => $basecampUser['id'] ?? null])
+                ->all(),
             'token' => $token,
             'expires_at' => $expiresAt,
         ]);
