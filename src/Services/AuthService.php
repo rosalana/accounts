@@ -65,6 +65,11 @@ class AuthService
 
         $user = Accounts::users()->toLocal($response->json('data'));
 
+        App::context()->put("user.{$user->id}", [
+            'local_id' => $user->id,
+            'remote_id' => $response->json('data.id'),
+        ]);
+
         App::hooks()->run('user:refresh', [
             'user' => collect($response->json('data', []))
                 ->except('id')

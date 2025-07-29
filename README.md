@@ -12,6 +12,7 @@ This package is a part of the Rosalana eco-system. It provides a way to manage a
   - [Accounts](#accounts)
   - [Basecamp Bindings](#basecamp-bindings)
   - [Stubs](#stubs)
+- [Available Hooks](#available-hooks)
 - [May Show in the Future](#may-show-in-the-future)
 - [License](#license)
 
@@ -174,6 +175,18 @@ routes
 ├── api.php
 └── auth.php
 ```
+
+## Available Hooks
+
+| Hook | Description | Data |
+|------|-------------|------|
+| `user:login` | Triggered when a user logs in successfully | `local_id`: Local User ID <br> `remote_id`: Remote User ID <br> And the rest of the response from Basecamp server|
+| `user:register` | Triggered when a new user registers successfully | `local_id`: Local User ID <br> `remote_id`: Remote User ID <br> And the rest of the response from Basecamp server |
+| `user:logout` | Triggered when a user logs out successfully | `local_id`: Local User ID <br> And the rest of the local user |
+| `user:refresh` | Triggered when a user refreshes their session | `local_id`: Local User ID <br> `remote_id`: Remote User ID <br> And the rest of the response from Basecamp server |
+
+> Read documentation for [Hooks](https://github.com/rosalana/core) to learn how to use them.
+
 
 ## May Show in the Future
 
