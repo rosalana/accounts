@@ -2,7 +2,6 @@
 
 namespace Rosalana\Accounts\Services\Basecamp;
 
-use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Services\Basecamp\Service;
 
 class UsersService extends Service

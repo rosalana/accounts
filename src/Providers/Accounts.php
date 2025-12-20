@@ -3,9 +3,9 @@
 namespace Rosalana\Accounts\Providers;
 
 use Illuminate\Support\Facades\Artisan;
+use Rosalana\Configure\Configure;
 use Rosalana\Core\Console\InternalCommands;
 use Rosalana\Core\Contracts\Package;
-use Rosalana\Core\Support\Config;
 
 class Accounts implements Package
 {
@@ -13,7 +13,7 @@ class Accounts implements Package
 
     public function resolvePublished(): bool
     {
-        return Config::exists('accounts');
+        return Configure::file('rosalana')->has('accounts');
     }
 
     public function publish(): array
@@ -23,13 +23,14 @@ class Accounts implements Package
                 'label' => 'Publish configuration settings to rosalana.php',
                 'run' => function () {
 
-                    Config::new('accounts')
-                        ->add('model', 'App\\Models\\User::class')
-                        ->add('identifier', "'rosalana_account_id'")
-                        ->comment(
-                            'Describe how Basecamp account is linked to your local Eloquent model. If you wish to change the identifier, make sure to update the provided database migration as well.',
-                            'Rosalana Basecamp Account Link'
+                    Configure::file('rosalana')
+                        ->section('accounts')
+                        ->withComment(
+                            'Rosalana Basecamp Account Link',
+                            "Describe how Basecamp account is linked to your local \nEloquent model. If you wish to change the identifier, \nmake sure to update the provided database migration as well.",
                         )
+                        ->value('model', 'App\Models\User::class')
+                        ->value('identifier', "rosalana_account_id")
                         ->save();
                 }
             ],
