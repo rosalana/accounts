@@ -13,7 +13,7 @@ class Accounts implements Package
 
     public function resolvePublished(): bool
     {
-        return Configure::file('rosalana')->has('accounts');
+        return Configure::fileExists('rosalana') && Configure::file('rosalana')->has('accounts');
     }
 
     public function publish(): array
