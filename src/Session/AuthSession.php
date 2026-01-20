@@ -35,4 +35,14 @@ class AuthSession
         Auth::setUser(Auth::user());
         Accounts::token()->set($token, $expiresAt);
     }
+
+    public function terminateById(int $id): void
+    {
+        return;
+    }
+
+    public function active(?User $user): array
+    {
+        return [];
+    }
 }

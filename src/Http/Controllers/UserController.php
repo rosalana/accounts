@@ -20,12 +20,6 @@ class UserController
 
     public function logout(Request $request, int $id): JsonResponse
     {
-        $user = Accounts::users()->toLocal((string) $id);
-
-        if (! $user) {
-            return error()->notFound("User with ID {$id} not found.")();
-        }
-
-        // Accounts::session()->terminateById($id);
+        return error('Not implemented', 501)();
     }
 }
