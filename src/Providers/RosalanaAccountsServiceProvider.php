@@ -2,6 +2,7 @@
 
 namespace Rosalana\Accounts\Providers;
 
+use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 use Rosalana\Accounts\Services\AccountsManager;
 use Rosalana\Core\Services\Basecamp\Manager;
@@ -34,8 +35,10 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
     public function boot()
     {
         if (!$this->app->runningInConsole()) {
-            $this->app['router']->pushMiddlewareToGroup('web',\Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
+            $this->app['router']->pushMiddlewareToGroup('web', \Rosalana\Accounts\Http\Middleware\CheckRosalanaTokenExpiration::class);
         }
+
+        $this->registerRoutes();
 
         $this->publishes([
             __DIR__ . '/../../database/migrations/' => database_path('migrations'),
@@ -46,5 +49,14 @@ class RosalanaAccountsServiceProvider extends ServiceProvider
             __DIR__ . '/../../stubs/Http/Requests/Auth' => app_path('Http/Requests/Auth'),
             __DIR__ . '/../../stubs/routes/auth.php' => base_path('routes/auth.php'),
         ], 'rosalana-accounts-stubs');
+    }
+
+    public function registerRoutes(): void
+    {
+        Route::middleware('internal')
+            ->prefix('internal')
+            ->group(function () {
+                $this->loadRoutesFrom(__DIR__ . '/../../routes/internal.php');
+            });
     }
 }
