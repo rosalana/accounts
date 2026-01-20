@@ -61,14 +61,13 @@ class AuthService
         $token = $response->json('meta.token');
         $expiresAt = $response->json('meta.expires_at');
 
-        Accounts::session()->refresh($token, $expiresAt);
-
-        $user = Accounts::users()->toLocal($response->json('data'));
+        $user = Accounts::users()->toLocal($response->json('data.id'));
 
         $ctx = App::context()->scope("user.{$user->id}");
-        
         $ctx->put('local_id', $user->id);
         $ctx->put('remote_id', $response->json('data.id'));
+
+        Accounts::session()->refresh($token, $expiresAt);
 
         App::hooks()->run('user:refresh', [
             'user' => collect($response->json('data', []))
@@ -88,12 +87,12 @@ class AuthService
         $expiresAt = $response->json('meta.expires_at');
 
         $user = Accounts::users()->sync($basecampUser);
-        Accounts::session()->authorize($user, $token, $expiresAt);
 
         $ctx = App::context()->scope("user.{$user->id}");
-
         $ctx->put('local_id', $user->id);
         $ctx->put('remote_id', $basecampUser['id']);
+
+        Accounts::session()->authorize($user, $token, $expiresAt);
 
         App::hooks()->run('user:' . $action, [
             'user' => collect($basecampUser)

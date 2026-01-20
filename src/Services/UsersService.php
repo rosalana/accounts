@@ -29,8 +29,6 @@ class UsersService
 
     public function current(): User
     {
-        [$model, $identifier] = $this->resolveModel();
-
         try {
             $response = Basecamp::auth()->current();
         } catch (BasecampUnauthorizedException $e) {
@@ -42,15 +40,13 @@ class UsersService
             throw new \InvalidArgumentException("Rosalana Accounts: Basecamp user data missing 'id'.");
         }
 
-        return $model::where($identifier, $response->json('data.id'))->first() ?? $this->sync($response->json('data'));
+        return $this->toLocal($response->json('data.id'));
     }
 
-    public function find(string $id): ?User
+    public function find(string $remote_id): ?User
     {
-        [$model, $identifier] = $this->resolveModel();
-
         try {
-            $response = Basecamp::users()->find($id);
+            $response = Basecamp::users()->find($remote_id);
         } catch (BasecampUnauthorizedException $e) {
             Accounts::session()->terminate();
             throw $e;
@@ -60,20 +56,16 @@ class UsersService
             throw new \InvalidArgumentException("Rosalana Accounts: User ID is required.");
         }
 
-        return $model::where($identifier, $response->json('data.id'))->first() ?? null;
+        return $this->toLocal($response->json('data.id'));
     }
 
-    public function toLocal(array|null $basecampUser): ?User
+    public function toLocal(?string $remote_id): ?User
     {
-        if (is_null($basecampUser)) return null;
-        
+        if (is_null($remote_id)) return null;
+
         [$model, $identifier] = $this->resolveModel();
 
-        if (empty($basecampUser['id'])) {
-            throw new \InvalidArgumentException("Rosalana Accounts: Basecamp user data missing 'id'.");
-        }
-
-        return $model::where($identifier, $basecampUser['id'])->first() ?? null;
+        return $model::where($identifier, $remote_id)->first() ?? null;
     }
 
     protected function resolveModel(): array
