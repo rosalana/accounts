@@ -31,10 +31,10 @@ class AuthService
     public function logout(): void
     {
         $user = Accounts::session()->current();
-        Basecamp::auth()->logout();
+        $response = Basecamp::auth()->logout();
         Accounts::session()->terminate();
 
-        event(new UserLogout($user));
+        event(new UserLogout($user, $response));
     }
 
     public function register(array $credentials): User
@@ -68,7 +68,7 @@ class AuthService
 
         Accounts::session()->refresh($token, $expiresAt);
 
-        event(new UserRefresh($user, $token));
+        event(new UserRefresh($user, $response, $token));
     }
 
     protected function authenticateAndSynchronize(Response $response, string $action): User
@@ -85,7 +85,7 @@ class AuthService
 
         Accounts::session()->authorize($user, $token, $expiresAt);
 
-        event(new $action($user, $token));
+        event(new $action($user, $response, $token));
 
         return $user;
     }
