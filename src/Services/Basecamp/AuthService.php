@@ -9,7 +9,7 @@ class AuthService extends Service
     public function login(array $credentials)
     {
         return $this->manager
-            ->withPipeline('user.login')
+            ->withAlias('user.login')
             ->post('auth/login', $credentials);
     }
 
@@ -17,14 +17,14 @@ class AuthService extends Service
     {
         return $this->manager
             ->withAuth()
-            ->withPipeline('user.logout')
+            ->withAlias('user.logout')
             ->post('auth/logout');
     }
 
     public function register(array $data)
     {
         return $this->manager
-            ->withPipeline('user.register')
+            ->withAlias('user.register')
             ->post('auth/register', $data);
     }
 
@@ -32,7 +32,7 @@ class AuthService extends Service
     {
         return $this->manager
             ->withAuth()
-            ->withPipeline('user.refresh')
+            ->withAlias('user.refresh')
             ->post('auth/refresh');
     }
 
@@ -40,7 +40,7 @@ class AuthService extends Service
     {
         return $this->manager
             ->withAuth()
-            ->withPipeline('user.current')
+            ->withAlias('user.current')
             ->get('auth/me');
     }
 }
