@@ -5,6 +5,10 @@ namespace Rosalana\Accounts\Services;
 use Illuminate\Foundation\Auth\User;
 use Illuminate\Http\Client\Response;
 use Illuminate\Validation\ValidationException;
+use Rosalana\Accounts\Events\UserLogin;
+use Rosalana\Accounts\Events\UserLogout;
+use Rosalana\Accounts\Events\UserRefresh;
+use Rosalana\Accounts\Events\UserRegister;
 use Rosalana\Accounts\Facades\Accounts;
 use Rosalana\Core\Exceptions\Http\BasecampUnauthorizedException;
 use Rosalana\Core\Exceptions\Http\BasecampValidationException;
@@ -21,7 +25,7 @@ class AuthService
             throw ValidationException::withMessages($e->getErrors());
         }
 
-        return $this->authenticateAndSynchronize($response, 'login');
+        return $this->authenticateAndSynchronize($response, UserLogin::class);
     }
 
     public function logout(): void
@@ -30,12 +34,7 @@ class AuthService
         Basecamp::auth()->logout();
         Accounts::session()->terminate();
 
-        App::hooks()->run('user:logout', [
-            'user' => collect($user?->toArray() ?? [])
-                ->except('id')
-                ->merge(['local_id' => $user?->id ?? null])
-                ->all(),
-        ]);
+        event(new UserLogout($user));
     }
 
     public function register(array $credentials): User
@@ -46,7 +45,7 @@ class AuthService
             throw ValidationException::withMessages($e->getErrors());
         }
 
-        return $this->authenticateAndSynchronize($response, 'register');
+        return $this->authenticateAndSynchronize($response, UserRegister::class);
     }
 
     public function refresh()
@@ -69,15 +68,7 @@ class AuthService
 
         Accounts::session()->refresh($token, $expiresAt);
 
-        App::hooks()->run('user:refresh', [
-            'user' => collect($response->json('data', []))
-                ->except('id')
-                ->merge(['local_id' => $user->id])
-                ->merge(['remote_id' => $response->json('data.id') ?? null])
-                ->all(),
-            'token' => $token,
-            'expires_at' => $expiresAt,
-        ]);
+        event(new UserRefresh($user, $token));
     }
 
     protected function authenticateAndSynchronize(Response $response, string $action): User
@@ -94,15 +85,7 @@ class AuthService
 
         Accounts::session()->authorize($user, $token, $expiresAt);
 
-        App::hooks()->run('user:' . $action, [
-            'user' => collect($basecampUser)
-                ->except('id')
-                ->merge(['local_id' => $user->id])
-                ->merge(['remote_id' => $basecampUser['id'] ?? null])
-                ->all(),
-            'token' => $token,
-            'expires_at' => $expiresAt,
-        ]);
+        event(new $action($user, $token));
 
         return $user;
     }
