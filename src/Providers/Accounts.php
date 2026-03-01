@@ -29,7 +29,7 @@ class Accounts implements Package
                             'Rosalana Basecamp Account Link',
                             "Describe how Basecamp account is linked to your local \nEloquent model. If you wish to change the identifier, \nmake sure to update the provided database migration as well.",
                         )
-                        ->value('model', 'App\Models\User::class')
+                        ->value('model', "App\\Models\\User::class")
                         ->value('identifier', "rosalana_id")
                         ->save();
                 }
