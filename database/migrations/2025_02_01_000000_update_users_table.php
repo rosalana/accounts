@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void 
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->unsignedBigInteger('rosalana_account_id')->unique()->nullable()->after('id');
+            $table->unsignedBigInteger('rosalana_id')->unique()->nullable()->after('id');
             $table->dropColumn('email_verified_at');
             $table->dropColumn('password');
         });
@@ -24,7 +24,7 @@ return new class extends Migration
     public function down(): void 
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('rosalana_account_id');
+            $table->dropColumn('rosalana_id');
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password')->nullable();
         });
